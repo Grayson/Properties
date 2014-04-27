@@ -10,6 +10,11 @@
 		1D889AFF190C9DD700D6B5F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D889AFE190C9DD700D6B5F3 /* Foundation.framework */; };
 		1D889B02190C9DD700D6B5F3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B01190C9DD700D6B5F3 /* main.m */; };
 		1D889B06190C9DD700D6B5F3 /* PropertyHack.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1D889B05190C9DD700D6B5F3 /* PropertyHack.1 */; };
+		1D889B0E190C9E0E00D6B5F3 /* TestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B0D190C9E0E00D6B5F3 /* TestObject.m */; };
+		1D889B11190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B10190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1D889B14190C9FEA00D6B5F3 /* FCSProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B13190C9FEA00D6B5F3 /* FCSProperty.m */; };
+		1D889B17190CB0F900D6B5F3 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B16190CB0F900D6B5F3 /* JRSwizzle.m */; };
+		1D889B1B190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D889B1A190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +36,16 @@
 		1D889B01190C9DD700D6B5F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1D889B04190C9DD700D6B5F3 /* PropertyHack-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PropertyHack-Prefix.pch"; sourceTree = "<group>"; };
 		1D889B05190C9DD700D6B5F3 /* PropertyHack.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = PropertyHack.1; sourceTree = "<group>"; };
+		1D889B0C190C9E0E00D6B5F3 /* TestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObject.h; sourceTree = "<group>"; };
+		1D889B0D190C9E0E00D6B5F3 /* TestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObject.m; sourceTree = "<group>"; };
+		1D889B0F190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+FCSPropertySyntax.h"; sourceTree = "<group>"; };
+		1D889B10190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FCSPropertySyntax.m"; sourceTree = "<group>"; };
+		1D889B12190C9FEA00D6B5F3 /* FCSProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCSProperty.h; sourceTree = "<group>"; };
+		1D889B13190C9FEA00D6B5F3 /* FCSProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCSProperty.m; sourceTree = "<group>"; };
+		1D889B15190CB0F900D6B5F3 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRSwizzle.h; path = JRSwizzle/JRSwizzle.h; sourceTree = SOURCE_ROOT; };
+		1D889B16190CB0F900D6B5F3 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JRSwizzle.m; path = JRSwizzle/JRSwizzle.m; sourceTree = SOURCE_ROOT; };
+		1D889B19190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCSPropertyChangingInformation.h; sourceTree = "<group>"; };
+		1D889B1A190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCSPropertyChangingInformation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +91,15 @@
 				1D889B01190C9DD700D6B5F3 /* main.m */,
 				1D889B05190C9DD700D6B5F3 /* PropertyHack.1 */,
 				1D889B03190C9DD700D6B5F3 /* Supporting Files */,
+				1D889B0C190C9E0E00D6B5F3 /* TestObject.h */,
+				1D889B0D190C9E0E00D6B5F3 /* TestObject.m */,
+				1D889B0F190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.h */,
+				1D889B10190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.m */,
+				1D889B12190C9FEA00D6B5F3 /* FCSProperty.h */,
+				1D889B13190C9FEA00D6B5F3 /* FCSProperty.m */,
+				1D889B19190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.h */,
+				1D889B1A190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.m */,
+				1D889B18190CB0FF00D6B5F3 /* JRSwizzle */,
 			);
 			path = PropertyHack;
 			sourceTree = "<group>";
@@ -86,6 +110,15 @@
 				1D889B04190C9DD700D6B5F3 /* PropertyHack-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1D889B18190CB0FF00D6B5F3 /* JRSwizzle */ = {
+			isa = PBXGroup;
+			children = (
+				1D889B15190CB0F900D6B5F3 /* JRSwizzle.h */,
+				1D889B16190CB0F900D6B5F3 /* JRSwizzle.m */,
+			);
+			name = JRSwizzle;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,7 +172,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D889B1B190CB9BE00D6B5F3 /* FCSPropertyChangingInformation.m in Sources */,
+				1D889B0E190C9E0E00D6B5F3 /* TestObject.m in Sources */,
+				1D889B14190C9FEA00D6B5F3 /* FCSProperty.m in Sources */,
 				1D889B02190C9DD700D6B5F3 /* main.m in Sources */,
+				1D889B11190C9F5A00D6B5F3 /* NSObject+FCSPropertySyntax.m in Sources */,
+				1D889B17190CB0F900D6B5F3 /* JRSwizzle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
