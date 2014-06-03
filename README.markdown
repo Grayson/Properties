@@ -12,22 +12,26 @@ Let's make a few assumptions.  First, I hate listening to properties based on st
 
 Imagine if we could use Blocks in order to handle KVO:
 
-	foo.property(@"bar").didChange = ^(FCSPropertyChangingInformation i) { NSLog(@"%@", i.newValue); };
+	foo.property(@"bar").onDidChange(^(FCSPropertyChangingInformation i) { NSLog(@"%@", i.newValue); });
 
 But wait!  There's this whole timing issue involved.  What about responding to changes *before* they happen?
 
-	foo.property(@"bar").willChange = ^(id _) { ... };
+	foo.property(@"bar").onWillChange(^(id _) { ... });
 
-But wait, does it stack?
+You can attach multiple observation blocks (note that due to an implementation detail, the order of execution cannot be assumed or guaranteed):
 
-	foo.property(@"bar").didChange = ^(id _) { NSLog(@"These blocks are LIFO."); };
-	foo.property(@"bar").didChange = ^(id _) { NSLog(@"This will execute before the above."); };
+	foo.property(@"bar").onDidChange(^(id _) { NSLog(@"One block"); });
+	foo.property(@"bar").onDidChange(^(id _) { NSLog(@"Two block"); });
 
-To be absolutely clear, yes.  Yes, it stacks.
+Finally, this syntax also gives you a way to readily remove observation of a particular block:
+
+	id observationIdentifier = foo.property(@"bar").onDidChange(^(id _) { NSLog(@"Remove me."); });
+	...
+	foo.property(@"bar").remove(observationIdentifier);
 
 ## Problems
 
-This is a hack.  There's a lot to be said about the hack, but it's still overriding expected behavior.  The part that gives me the most cause for concern is the fact that I'm swizzling out `-dealloc`.  Yep, `-dealloc`.  I had to do that because associated objects are released *after* the object they're associated with is deallocated.  That causes a problem with cleanup.  Sure, there's also the problem that this tosses associated objects around everywhere, but swizzling `-dealloc` should give everyone a pause for concern.
+This is a hack.  There's a lot to be said about the hack, but it's still overriding expected behavior.  The part that gives me the most cause for concern is the fact that I'm swizzling out `-dealloc`.  Yep, `-dealloc`.  I do that because associated objects are released *after* the object they're associated with is deallocated.  That causes a problem with cleanup.  Sure, there's also the problem that this tosses associated objects around everywhere, but swizzling `-dealloc` should give everyone a pause for concern.
 
 I suppose that raises the question of whether this is usable.  I suppose so.  Sure, why not?  I personally may not use this for any project that requires a high degree of sophistication that guarantees complete safety, but I may toss it at some pet projects and home projects.  Just be aware that if you use this, you're throwing in a hack that overrides `-dealloc` just for some convenient syntax.
 
@@ -36,12 +40,9 @@ I suppose that raises the question of whether this is usable.  I suppose so.  Su
 At the moment, this is more or less a proof of concept.  I'm just tossing this out there because I was interested in the problem space and wanted to mess around with abusing Block syntax.  Here are a few things I might be interested in doing moving forward:
 
 1. Stop swizzling `-dealloc`.  I don't have a plan for this yet, but I'd feel much better not swizzling it.
-2. Document.  Seriously, I just tossed this together as a quick hack in an evening.  If I actually use it, I may add some documentation.
+2. Document.  Seriously, I just tossed this together as a quick hack in a few evenings.  If I actually use it, I may add some documentation.
 3. Add some extra project targets.  Integrating this should be as easy as integrating a framework/library.  Testing might be nice.
 4. Allow for non-ARC compilation.  I've never had a project that crossed these lines without just tossing around `-fno-objc-arc`, so that'd be an interesting step.
-5. Come up with some syntax for removing blocks.
-
-As for the latter, I'm assuming that I could reasonably continue to abuse the getter+block syntax and have `-add` and `-remove` in which `-add` returns an object or marker that you can pass to `-remove`.  That might require a bit more thought in terms of creating the appropriate syntax and hacking around certain limitations.  In that case, the syntax above will change to be `foo.property(@"bar").add(^{...});`.  If that comes to pass, I may version this so that there's an "=" and an "add" option when checking out the repo.  Of course, that assumes that I pursue this beyond my initial curiosity and willingness to think through those concerns.
 
 ## Usage
 
@@ -61,13 +62,11 @@ With those added, you'll need to add `NSObject+FCSPropertySyntax.h` to the `#imp
 
 So, you may notice that each block receives a custom object (`FCSPropertyChangingInformation`).  That's an absurdly long name.  I decided that it would be better to encapsulate all of the information that is actually being received into one object to simplify the block syntax.  Passing in a half dozen or so parameters to a block is an absurd pain.  Apple decided to hide some of those details in an NSDictionary, but I don't think that dictionaries are a good abstraction in this case (seriously, there's a finite amount of information that we actually care about).  The FCSPropertyChangingInformation object should provide all of the information that you actually care about.
 
-You may note that the FCSPropertyChangingInformation object *does not* have an entry for the receiver of the property changed notification (the object providing the block, not the backing FCSProperty).  I'd have loved to have that encapsulated, but it would have required some additional hacking (macro?).  You should be wary to follow the appropriate Block memory management practices to avoid accidentally creating a retain cycle to `self`.
-
 The FCSPropertyChangingInformation object exposes a property called `@newObject` (I use the "@" symbol for properties, can we make that a thing?) but the getter is called `-theNewValue`.  This absolves the compiler requirement concerning method names starting with "new".  I'd like a better name so I could avoid this hack, but I'm assuming we're all sufficiently modern to use the dot-notation syntax for properties and it won't be a problem.  If you or your company still uses method calling syntax only, send me an email and I'll chew out whoever writes your coding guidelines.
 
 ## An additional thought on property syntax
 
-I nearly always side on the notion that the Objective-C 2.0 dot-notation syntax should **only** be used for properties that would otherwise represent simple getters (readonly implementations implemented as methods are fine so long as they don't do work that is expensive or could cause side effects).  This hack is a place where I make an exception.  I'm not happy that I'm abusing the dot-notation syntax, but I find it much more pleasant than the alternative standard syntax.  I'm willing to sublimate my otherwise strongly-held and hard-fought opinion when it benefits me in this way.
+I nearly always side on the notion that the Objective-C 2.0 dot-notation syntax should **only** be used for properties that would otherwise represent simple accessors (readonly implementations implemented as methods are fine so long as they don't do work that is expensive or could cause side effects).  This hack is a place where I make an exception.  I'm not happy that I'm abusing the dot-notation syntax, but I find it much more pleasant than the alternative standard syntax.  I'm willing to sublimate my otherwise strongly-held and hard-fought opinion when it benefits me in this way.
 
 ## License
 
