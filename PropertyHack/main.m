@@ -16,21 +16,27 @@ int main(int argc, const char * argv[])
 	@autoreleasepool {
 	    
 		TestObject *object = [TestObject new];
-		object.property(@"content").didChange = ^(FCSPropertyChangingInformation *info){
-			NSLog(@"%@: Did change", info);
-		};
+
+		object.property(@"content").onDidChange(^(FCSPropertyChangingInformation *info)
+		{
+			NSLog(@"onDidChange\n%@", info);
+		});
 		
-		object.property(@"content").didChange = ^(FCSPropertyChangingInformation *info){
-			NSLog(@"%@: Did change yet again!", info);
-		};
+		object.property(@"content").onDidChange(^(FCSPropertyChangingInformation *info)
+		{
+			NSLog(@"Another did change");
+		});
 		
-		object.property(@"content").willChange = ^(FCSPropertyChangingInformation *info){
-			NSLog(@"%@: Will change", info);
-		};
-		
+		id y = object.property(@"content").onWillChange(^(FCSPropertyChangingInformation *info)
+		{
+			NSLog(@"onWillChange\n%@", info);
+		});
+				
 		object.content = @(YES);
+		
+		object.property(@"content").remove(y);
+
 		object.content = @(NO);
-	    
 	}
     return 0;
 }

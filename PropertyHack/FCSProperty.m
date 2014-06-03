@@ -18,8 +18,8 @@ void *kObservationContext = &kObservationContext;
 @implementation FCSProperty
 {
 @private
-	FCSPropertyBlock _willChangeBlock;
-	FCSPropertyBlock _didChangeBlock;
+	NSMutableDictionary *_didChangeBlocks;
+	NSMutableDictionary *_willChangeBlocks;
 }
 
 + (instancetype)propertyWithObject:(id)object property:(NSString *)propertyName
@@ -35,6 +35,9 @@ void *kObservationContext = &kObservationContext;
 	self.object = object;
 	self.propertyName = propertyName;
 	
+	_didChangeBlocks = [NSMutableDictionary dictionary];
+	_willChangeBlocks = [NSMutableDictionary dictionary];
+	
 	[object addObserver:self forKeyPath:propertyName options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld|NSKeyValueObservingOptionPrior context:kObservationContext];
 	
 	return self;
@@ -49,47 +52,46 @@ void *kObservationContext = &kObservationContext;
 {
 	if (context != kObservationContext || object != self.object || ![keyPath isEqual:self.propertyName])
 		return;
+
 	FCSPropertyChangingInformation *information = [FCSPropertyChangingInformation informationWithKeyPath:keyPath observingObject:nil changingObject:self.object changeDictionary:change];
-	if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue] == YES && self.willChange != nil)
-		self.willChange(information);
-	else if (self.didChange != nil)
-		self.didChange(information);
-}
-
-- (FCSPropertyBlock)willChange
-{
-	return _willChangeBlock;
-}
-
-- (void)setWillChange:(FCSPropertyBlock)willChange
-{
-	if (_willChangeBlock != nil)
-	{
-		__weak FCSPropertyBlock oldBlock = _willChangeBlock;
-		_willChangeBlock = [^(FCSPropertyChangingInformation *info) { willChange(info); oldBlock(info); } copy];
-	}
+	
+	if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue])
+		[_willChangeBlocks enumerateKeysAndObjectsUsingBlock:^(id key, FCSPropertyObservationBlock block, BOOL *stop) { block(information); }];
 	else
-	{
-		_willChangeBlock = willChange;
-	}
+		[_didChangeBlocks enumerateKeysAndObjectsUsingBlock:^(id key, FCSPropertyObservationBlock block, BOOL *stop) { block(information); }];
 }
 
-- (FCSPropertyBlock)didChange
+- (FCSPropertyObservationRegistrationBlock)onDidChange
 {
-	return  _didChangeBlock;
+	return ^(FCSPropertyObservationBlock observer)
+	{
+		NSUUID *uuid = [NSUUID UUID];
+		[_didChangeBlocks setObject:observer forKey:uuid];
+		return uuid;
+	};
 }
 
-- (void)setDidChange:(FCSPropertyBlock)didChange
+- (FCSPropertyObservationRegistrationBlock)onWillChange
 {
-	if (_didChangeBlock != nil)
+	return ^(FCSPropertyObservationBlock observer)
 	{
-		__weak FCSPropertyBlock oldBlock = _didChangeBlock;
-		_didChangeBlock = [^(FCSPropertyChangingInformation *info) { didChange(info); oldBlock(info); } copy];
-	}
-	else
+		NSUUID *uuid = [NSUUID UUID];
+		[_willChangeBlocks setObject:observer forKey:uuid];
+		return uuid;
+	};
+}
+
+- (FCSPropertyObservationRemovalBlock)remove
+{
+	return ^(id identifier)
 	{
-		_didChangeBlock = didChange;
-	}
+		BOOL didRemove;
+		if ((didRemove = ([_didChangeBlocks objectForKey:identifier] != nil)))
+			[_didChangeBlocks removeObjectForKey:identifier];
+		if (!didRemove && (didRemove = [_willChangeBlocks objectForKey:identifier] != nil))
+			[_willChangeBlocks removeObjectForKey:identifier];
+		return didRemove;
+	};
 }
 
 @end
