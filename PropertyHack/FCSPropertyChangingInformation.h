@@ -10,12 +10,12 @@
 
 @interface FCSPropertyChangingInformation : NSObject
 
-@property (nonatomic, copy) NSString *keyPath;
-@property (nonatomic, strong) id observingObject;
-@property (nonatomic, strong) id changingObject;
-@property (nonatomic, strong) id originalValue;
-@property (nonatomic, strong, getter = theNewValue) id newValue;
-@property (nonatomic, strong) NSIndexSet *indexes;
+@property (nonatomic, readonly, copy) NSString *keyPath;
+@property (nonatomic, readonly) id observingObject;
+@property (nonatomic, readonly) id changingObject;
+@property (nonatomic, readonly) id originalValue;
+@property (nonatomic, readonly, getter = theNewValue) id newValue;
+@property (nonatomic, readonly) NSIndexSet *indexes;
 
 + (instancetype)informationWithKeyPath:(NSString *)keyPath observingObject:(id)observingObject changingObject:(id)changingObject changeDictionary:(NSDictionary *)changeDictionary;
 - (id)initWithKeyPath:(NSString *)keyPath observingObject:(id)observingObject changingObject:(id)changingObject changeDictionary:(NSDictionary *)changeDictionary;

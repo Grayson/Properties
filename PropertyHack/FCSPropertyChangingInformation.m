@@ -8,6 +8,15 @@
 
 #import "FCSPropertyChangingInformation.h"
 
+@interface FCSPropertyChangingInformation ()
+@property (nonatomic, copy) NSString *keyPath;
+@property (nonatomic, strong) id observingObject;
+@property (nonatomic, strong) id changingObject;
+@property (nonatomic, strong) id originalValue;
+@property (nonatomic, strong, getter = theNewValue) id newValue;
+@property (nonatomic, strong) NSIndexSet *indexes;
+@end
+
 @implementation FCSPropertyChangingInformation
 
 + (instancetype)informationWithKeyPath:(NSString *)keyPath observingObject:(id)observingObject changingObject:(id)changingObject changeDictionary:(NSDictionary *)changeDictionary
